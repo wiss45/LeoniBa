@@ -1,0 +1,56 @@
+package com.sip.controllers;
+
+import java.util.Map;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.sip.requests.EquipementRequest;
+import com.sip.responses.EquipementResponse;
+import com.sip.interfaces.EquipementService;
+
+@CrossOrigin("*")
+@RestController
+@RequestMapping("/equipements")
+public class EquipementController {
+
+    private final EquipementService equipementService;
+
+    public EquipementController(EquipementService equipementService) {
+        this.equipementService = equipementService;
+    }
+
+
+    @GetMapping("/")
+    public ResponseEntity<Map<String, Object>> getAllEquipements(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Map<String, Object> result = equipementService.getAllEquipements(pageable);
+        return ResponseEntity.ok(result);
+    }
+
+    
+    @PostMapping("/")
+    public ResponseEntity<EquipementResponse> createEquipement(@RequestBody EquipementRequest equipementRequest) {
+        EquipementResponse savedEquipement = equipementService.addEquipement(equipementRequest);
+        return ResponseEntity.ok(savedEquipement);
+    }
+
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<EquipementResponse> updateEquipement(@PathVariable Long id,@RequestBody EquipementRequest equipementRequest) {
+        EquipementResponse updatedEquipement = equipementService.updateEquipement(id, equipementRequest);
+        return ResponseEntity.ok(updatedEquipement);
+    }
+
+  
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEquipement(@PathVariable Long id) {
+        equipementService.deleteEquipement(id);
+        return ResponseEntity.noContent().build();
+    }
+}
