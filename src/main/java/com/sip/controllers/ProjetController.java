@@ -1,16 +1,18 @@
 package com.sip.controllers;
 
+import com.sip.entities.Projet;
 import com.sip.interfaces.ProjetService;
 import com.sip.requests.ProjetRequest;
 import com.sip.responses.ProjetResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -25,7 +27,7 @@ public class ProjetController {
         this.projetService = projetService;
     }
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<ProjetResponse> createProjet(@RequestBody ProjetRequest request) {
         ProjetResponse response = projetService.createProjet(request);
         return ResponseEntity.ok(response);
@@ -37,7 +39,12 @@ public class ProjetController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
+    @GetMapping("/")
+    public List<Projet> getProjets() {
+        return projetService.getProjets();
+    }
+    
+    @GetMapping("/page")
     public ResponseEntity<Map<String, Object>> getAllProjets(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size

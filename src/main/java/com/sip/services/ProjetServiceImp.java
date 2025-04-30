@@ -1,5 +1,6 @@
 package com.sip.services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.sip.entities.Equipement;
 import com.sip.entities.Projet;
 import com.sip.interfaces.ProjetService;
 import com.sip.repositories.EquipementRepository;
@@ -35,12 +37,34 @@ public class ProjetServiceImp implements ProjetService  {
 			this.equipementRepository = equipementRepository;
 		}
 
-		@Override
+	    @Override
 	    public ProjetResponse createProjet(ProjetRequest request) {
 	        Projet projet = mapToEntity(request);
+
+	        
+	        if (request.getEquipements() != null) {
+	            List<Equipement> equipements = new ArrayList<>();
+	            for (Equipement equipement : request.getEquipements()) {
+	                if (equipement.getId() != null) {
+	                    
+	                    Equipement existingEquipement = equipementRepository.findById(equipement.getId())
+	                            .orElseThrow(() -> new IllegalArgumentException("Équipement non trouvé"));
+	                    existingEquipement.setProjet(projet); 
+	                    equipements.add(existingEquipement);
+	                } else {
+	                    
+	                    equipement.setProjet(projet); 
+	                    equipements.add(equipement);
+	                }
+	            }
+	            projet.setEquipements(equipements);
+	        }
+
+	        
 	        Projet saved = projetRepository.save(projet);
 	        return mapToResponse(saved);
 	    }
+
 
 	    @Override
 	    public ProjetResponse updateProjet(Long id, ProjetRequest request) {
@@ -73,7 +97,11 @@ public class ProjetServiceImp implements ProjetService  {
 	        return mapToResponse(updated);
 	    }
 
-	   
+	    
+	    @Override
+	    public List<Projet> getProjets() {
+	        return projetRepository.findAll();
+	    }
 
 	    @Override
 	    public Map<String, Object> getAllProjets(Pageable pageable) {
@@ -115,7 +143,8 @@ public class ProjetServiceImp implements ProjetService  {
 	            projet.getStatus(),
 	            projet.getSommePrevisionnel(),
 	            projet.getSommeReel(),
-	            projet.getEquipements()
+	            projet.getEquipements(),
+	            projet.getPlan()
 	        );
 	    }
 	    
@@ -135,7 +164,8 @@ public class ProjetServiceImp implements ProjetService  {
 	            request.getStatus(),
 	            request.getSommePrevisionnel(),
 	            request.getSommeReel(),
-	            request.getEquipements()
+	            request.getEquipements(),
+	            request.getPlan()
 	        );
 	    }
 

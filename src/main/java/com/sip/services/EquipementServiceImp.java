@@ -27,6 +27,10 @@ public class EquipementServiceImp implements EquipementService {
 		this.equipementRepository = equipementRepository;
 	}
 
+	@Override
+	public List<Equipement> getEquipements() {
+        return equipementRepository.findAll();
+    }
 
 	@Override
 	public Map<String, Object> getAllEquipements(Pageable pageable) {

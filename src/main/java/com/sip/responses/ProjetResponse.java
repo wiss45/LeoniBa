@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.sip.entities.Equipement;
+import com.sip.entities.Plan;
 import com.sip.enums.DrawingStatus;
 
 public class ProjetResponse {
@@ -24,13 +25,14 @@ public class ProjetResponse {
     private double sommePrevisionnel;
     private double sommeReel;
     private List<Equipement> equipements;
+    private Plan plan ;
 
     public ProjetResponse() {}
 
     public ProjetResponse(Long id, String name, String customer, String deravative, double maxQuantite,
                           Date a_samples, Date b_samples, Date c_samples, Date d_samples,
                           Date sop, Date sop_1, String responsable, DrawingStatus status,
-                          double sommePrevisionnel, double sommeReel, List<Equipement> equipements) {
+                          double sommePrevisionnel, double sommeReel, List<Equipement> equipements, Plan plan) {
         this.id = id;
         this.name = name;
         this.customer = customer;
@@ -47,6 +49,7 @@ public class ProjetResponse {
         this.sommePrevisionnel = sommePrevisionnel;
         this.sommeReel = sommeReel;
         this.equipements = equipements;
+        this.plan = plan;
     }
 
    
@@ -98,6 +101,14 @@ public class ProjetResponse {
 
     public List<Equipement> getEquipements() { return equipements; }
     public void setEquipements(List<Equipement> equipements) { this.equipements = equipements; }
+
+	public Plan getPlan() {
+		return plan;
+	}
+
+	public void setPlan(Plan plan) {
+		this.plan = plan;
+	}
 
 
 

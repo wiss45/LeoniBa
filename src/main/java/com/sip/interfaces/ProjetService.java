@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 
+import com.sip.entities.Projet;
 import com.sip.requests.ProjetRequest;
 import com.sip.responses.ProjetResponse;
 
@@ -19,5 +20,9 @@ public interface ProjetService {
 	ProjetResponse createProjet(ProjetRequest request);
 
 	Map<String, Object> getAllProjets(Pageable pageable);
+
+
+
+	List<Projet> getProjets();
 
 }

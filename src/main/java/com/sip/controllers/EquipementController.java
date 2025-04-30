@@ -1,5 +1,6 @@
 package com.sip.controllers;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.sip.requests.EquipementRequest;
 import com.sip.responses.EquipementResponse;
+
+import com.sip.entities.Equipement;
 import com.sip.interfaces.EquipementService;
 
 @CrossOrigin("*")
@@ -21,9 +24,13 @@ public class EquipementController {
     public EquipementController(EquipementService equipementService) {
         this.equipementService = equipementService;
     }
-
-
+ 
     @GetMapping("/")
+    public List<Equipement> getEquipements() {
+        return equipementService.getEquipements();
+    }
+
+    @GetMapping("/page")
     public ResponseEntity<Map<String, Object>> getAllEquipements(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {

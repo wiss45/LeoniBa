@@ -3,14 +3,13 @@ package com.sip.entities;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sip.enums.DrawingStatus;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Projet {
 	    
 	
@@ -32,16 +31,23 @@ public class Projet {
 	    private DrawingStatus status;
 	    private double sommePrevisionnel;
 	    private double sommeReel;
-
+        
+	    
+	    @JsonIgnore
+	    @OneToMany(mappedBy = "projet", cascade = CascadeType.ALL, orphanRemoval = true)
 	    private List<Equipement> equipements;
-
+        
+	    @JsonIgnore
+	    @OneToOne(mappedBy = "projet", cascade = CascadeType.ALL)
+	    private Plan plan;
+	    
 	    public Projet() {}
 
 	    public Projet(String name, String customer, String deravative, double maxQuantite,
 	                         Date a_samples, Date b_samples, Date c_samples, Date d_samples,
 	                         Date sop, Date sop_1, String responsable, DrawingStatus status,
 	                         double sommePrevisionnel, double sommeReel,
-	                         List<Equipement> equipements) {
+	                         List<Equipement> equipements, Plan plan) {
 	        this.name = name;
 	        this.customer = customer;
 	        this.deravative = deravative;
@@ -57,6 +63,7 @@ public class Projet {
 	        this.sommePrevisionnel = sommePrevisionnel;
 	        this.sommeReel = sommeReel;
 	        this.equipements = equipements;
+	        this.plan = plan;
 	    }
 
 	    
@@ -119,4 +126,16 @@ public class Projet {
 	    public void setEquipements(List<Equipement> equipements) {
 	        this.equipements = equipements;
 	    }
+
+		public Plan getPlan() {
+			return plan;
+		}
+
+		public void setPlan(Plan plan) {
+			this.plan = plan;
+		}
+
+	
+	    
+	    
 }

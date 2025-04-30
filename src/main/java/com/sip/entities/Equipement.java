@@ -1,5 +1,10 @@
 package com.sip.entities;
 
+import java.util.List;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -21,10 +26,16 @@ public class Equipement {
     private String capexType;
 
     
-    @ManyToOne
+    
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "projet_id")
     private Projet projet;
 
+    @JsonIgnore
+    @ManyToMany(mappedBy = "equipements")
+    private List<Plan> plans;
     
 
     public Long getId() {
@@ -122,10 +133,19 @@ public class Equipement {
     public void setProjet(Projet projet) {
         this.projet = projet;
     }
+    
+   
+
+	public List<Plan> getPlans() {
+		return plans;
+	}
+
+	public void setPlans(List<Plan> plans) {
+		this.plans = plans;
+	}
 
 	public Equipement(String name, double firstUnitPrice, double secondUnitPrice, double thirdUnitPrice, int leadTime,
-			int transportationTime, int installationTime, String supplier, double price, String capexType,
-			Projet projet) {
+			int transportationTime, int installationTime, String supplier, double price, String capexType) {
 		
 		this.name = name;
 		this.firstUnitPrice = firstUnitPrice;
@@ -137,7 +157,7 @@ public class Equipement {
 		this.supplier = supplier;
 		this.price = price;
 		this.capexType = capexType;
-		this.projet = projet;
+		
 	}
 
 	public Equipement() {
