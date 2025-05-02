@@ -1,5 +1,6 @@
 package com.sip.controllers;
 
+import com.sip.entities.User;
 import com.sip.interfaces.RegisterService;
 import com.sip.requests.RegisterRequest;
 
@@ -7,6 +8,8 @@ import com.sip.responses.RegisterResponse;
 
 
 import jakarta.validation.Valid;
+
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +37,26 @@ public class RegisterController {
                 HttpStatus.BAD_REQUEST
             );
         }
+    }
+    
+    @DeleteMapping("/{id}")
+    public void delUserNotification(@PathVariable long id) {
+    	this.registerService.deleteUserNotification(id);
+    }
+    
+    @GetMapping("/nombreNotifications")
+    public int nbreNotifs () {
+    	return this.registerService.nombresNotifications();
+    }
+    
+    @GetMapping("/")
+    public List<User> getUsers () {
+    	return this.registerService.listUsers();
+    }
+    
+    @PutMapping("/{id}")
+    public RegisterResponse activeUser(@PathVariable long id) {
+    	return this.registerService.activateUser(id);
     }
 }
 

@@ -12,6 +12,8 @@ import com.sip.requests.RegisterRequest;
 
 import com.sip.responses.RegisterResponse;
 
+import jakarta.transaction.Transactional;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -75,6 +77,67 @@ public class RegisterServiceImp implements RegisterService {
             roleNames,
             savedUser.getEnabled(),
             "User registered successfully"
+        );
+    }
+    
+    
+    
+    @Override
+    @Transactional
+    public void deleteUserNotification(long id) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        
+        List<Role> roles = new ArrayList<>(user.getRoles());
+        
+       
+        for (Role role : roles) {
+            role.getUsers().removeIf(u -> u.getId() == user.getId());
+            roleRepository.save(role); 
+        }
+        
+       
+        user.getRoles().clear();
+        userRepository.save(user); 
+        
+       
+        userRepository.delete(user);
+    }
+    
+    @Override
+    public int nombresNotifications () {
+    	return this.userRepository.nombreNotifications();
+    }
+    
+    @Override
+    public List<User> listUsers () {
+    	List<User> users = this.userRepository.findByEnabledFalse();
+    	return users ;
+    }
+    
+    @Override
+    @Transactional
+    public RegisterResponse activateUser(long id) {
+        User user = this.userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        
+       
+        user.setEnabled(true);
+        User savedUser = this.userRepository.save(user);
+        
+       
+        List<String> roleNames = savedUser.getRoles().stream()
+            .map(role -> role.getName().name())
+            .collect(Collectors.toList());
+        
+        return new RegisterResponse(
+            savedUser.getId(),
+            savedUser.getUsername(),
+            savedUser.getEmail(),
+            roleNames,
+            savedUser.getEnabled(),
+            "User activated successfully"
         );
     }
 }

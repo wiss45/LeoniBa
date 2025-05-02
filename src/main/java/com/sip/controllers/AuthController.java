@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
-
+import com.sip.entities.User;
 import com.sip.jwt.jwtUtils;
 import com.sip.repositories.RoleRepository;
 import com.sip.repositories.UserRepository;
@@ -53,30 +52,35 @@ import jakarta.validation.Valid;
 	  
 
 	  
-	  @PostMapping("/login")
-	  public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+	
+		  @PostMapping("/login")
+		  public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+		      // Vérifier d'abord si l'utilisateur est activé
+		      User user = userRepository.findUserByUsername(loginRequest.getUsername())
+		          .orElseThrow(() -> new RuntimeException("User not found"));
+		      
+		      if (!user.getEnabled()) {
+		          return ResponseEntity
+		              .badRequest()
+		              .body("Error: Account is not activated!");
+		      }
 
-		  //1-get Authentication
-	    Authentication authentication = authenticationManager.authenticate(
-	        new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+		      // Si l'utilisateur est activé, procéder à l'authentification
+		      Authentication authentication = authenticationManager.authenticate(
+		          new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-	     //2-get token
-	    SecurityContextHolder.getContext().setAuthentication(authentication);
-	    String jwt = jwtUtils.generateJwtToken(authentication);
-	    
-	    //3-get User details
-	    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-	    
-	     //4-get roles
-	    List<String> roles = userDetails.getAuthorities().stream()
-	        .map(item -> item.getAuthority())
-	        .collect(Collectors.toList());
+		      SecurityContextHolder.getContext().setAuthentication(authentication);
+		      String jwt = jwtUtils.generateJwtToken(authentication);
+		      
+		      UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+		      List<String> roles = userDetails.getAuthorities().stream()
+		          .map(item -> item.getAuthority())
+		          .collect(Collectors.toList());
 
-	    return ResponseEntity.ok(new JwtResponse(jwt, 
-	                         userDetails.getId(), 
-	                         userDetails.getUsername(),  
-	                         userDetails.getEmail(), 
-	                         roles));
-	  }
-
+		      return ResponseEntity.ok(new JwtResponse(jwt, 
+		                           userDetails.getId(), 
+		                           userDetails.getUsername(),  
+		                           userDetails.getEmail(), 
+		                           roles));
+		  }
 }

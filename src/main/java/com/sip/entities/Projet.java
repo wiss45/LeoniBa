@@ -34,11 +34,11 @@ public class Projet {
         
 	    
 	    @JsonIgnore
-	    @OneToMany(mappedBy = "projet", cascade = CascadeType.ALL, orphanRemoval = true)
+	    @OneToMany(mappedBy = "projet", cascade = CascadeType.ALL, orphanRemoval = true ,fetch = FetchType.EAGER)
 	    private List<Equipement> equipements;
         
 	    @JsonIgnore
-	    @OneToOne(mappedBy = "projet", cascade = CascadeType.ALL)
+	    @OneToOne(mappedBy = "projet", cascade = CascadeType.ALL , fetch = FetchType.EAGER)
 	    private Plan plan;
 	    
 	    public Projet() {}

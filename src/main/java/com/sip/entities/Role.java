@@ -2,6 +2,7 @@ package com.sip.entities;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sip.enums.ERole;
 
 import jakarta.persistence.*;
@@ -18,6 +19,8 @@ public class Role {
 	@Enumerated(EnumType.STRING)
 	private ERole name ;
 
+	
+	@JsonIgnore
 	@ManyToMany(mappedBy = "roles")
     private List<User> users ;
 	
@@ -44,6 +47,14 @@ public class Role {
 
 	public Role() {
 		
+	}
+
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
 	}
 	
 	

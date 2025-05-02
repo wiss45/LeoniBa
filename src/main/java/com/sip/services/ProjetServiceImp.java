@@ -127,6 +127,22 @@ public class ProjetServiceImp implements ProjetService  {
 	    }
 
 	    private ProjetResponse mapToResponse(Projet projet) {
+	        List<Equipement> allEquipements = new ArrayList<>();
+
+	        // Équipements liés directement au projet
+	        if (projet.getEquipements() != null) {
+	            allEquipements.addAll(projet.getEquipements());
+	        }
+
+	        // Équipements liés via le plan
+	        if (projet.getPlan() != null && projet.getPlan().getEquipements() != null) {
+	            for (Equipement eq : projet.getPlan().getEquipements()) {
+	                if (!allEquipements.contains(eq)) {
+	                    allEquipements.add(eq);
+	                }
+	            }
+	        }
+
 	        return new ProjetResponse(
 	            projet.getId(),
 	            projet.getName(),
@@ -143,10 +159,12 @@ public class ProjetServiceImp implements ProjetService  {
 	            projet.getStatus(),
 	            projet.getSommePrevisionnel(),
 	            projet.getSommeReel(),
-	            projet.getEquipements(),
+	            allEquipements,
 	            projet.getPlan()
 	        );
 	    }
+
+
 	    
 	    private Projet mapToEntity(ProjetRequest request) {
 	        return new Projet(
