@@ -187,6 +187,9 @@ public class ProjetServiceImp implements ProjetService  {
 	        );
 	    }
 
-
+		@Override
+		public int NombreProjets() {
+			return this.projetRepository.nombreProjetsActifs();
+		}
 	  
 }

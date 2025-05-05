@@ -25,8 +25,8 @@ public class PlanServiceImp implements PlanService {
 
     @Override
     public PlanResponse createPlan(PlanRequest request) {
+    	
         Plan plan = new Plan();
-
         plan.setProjet(request.getProjet());
         plan.setEquipements(request.getEquipements());
         plan.setOrderNumber(request.getOrderNumber());
@@ -38,6 +38,7 @@ public class PlanServiceImp implements PlanService {
         plan.setRprdate(request.getRprdate());
 
         Plan savedPlan = planRepository.save(plan);
+        System.out.println(savedPlan);
         return toResponse(savedPlan);
     }
 

@@ -138,6 +138,12 @@ public class EquipementServiceImp implements EquipementService {
 		this.equipementRepository.deleteById(id);
 	}
 
+	
+	@Override
+	public int NombreEquipements() {
+		return this.equipementRepository.nombreEquipements();
+	}
+	
 
 
 }

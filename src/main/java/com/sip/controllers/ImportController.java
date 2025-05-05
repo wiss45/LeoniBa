@@ -1,7 +1,6 @@
 package com.sip.controllers;
 
-import com.example.leonisud.Entity.Equipment;
-import com.example.leonisud.Service.ExcelImportService;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -13,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.sip.entities.Equipement;
+import com.sip.services.ExcelImportService;
 
 import java.io.IOException;
 import java.util.*;
@@ -52,7 +54,7 @@ public class ImportController {
       }
 
       // Process the file using the service
-      List<Equipment> importedEquipment = excelImportService.importEquipmentFromExcel(file, replaceExisting);
+      List<Equipement> importedEquipment = excelImportService.importEquipmentFromExcel(file, replaceExisting);
 
       // Return success response
       Map<String, Object> response = new HashMap<>();

@@ -17,7 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/projets")
-@CrossOrigin(origins = "*")
+@CrossOrigin("*")
 public class ProjetController {
 
     private final ProjetService projetService;
@@ -59,5 +59,10 @@ public class ProjetController {
     public ResponseEntity<Void> deleteProjet(@PathVariable Long id) {
         projetService.deleteProjet(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    @GetMapping("/nombreProjets")
+    public int nbreProjets() {
+    	return this.projetService.NombreProjets();
     }
 }

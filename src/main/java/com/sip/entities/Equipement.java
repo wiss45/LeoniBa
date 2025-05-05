@@ -162,6 +162,16 @@ public class Equipement {
 
 	public Equipement() {
 	}
+
+	public void setActive(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setUser(User currentUser) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
     

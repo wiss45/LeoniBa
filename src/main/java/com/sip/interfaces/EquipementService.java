@@ -21,4 +21,6 @@ public interface EquipementService {
 
 	List<Equipement> getEquipements();
 
+	int NombreEquipements();
+
 }

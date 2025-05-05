@@ -60,7 +60,7 @@ public class SecurityConfiguration {
         configuration.setAllowedHeaders(Arrays.asList("*"));
         // Permet l'envoi de cookies et de credentials
         configuration.setAllowCredentials(true);
-
+        
         // Enregistrement de la configuration CORS
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -118,6 +118,7 @@ public class SecurityConfiguration {
                 auth.requestMatchers("/auth/**").permitAll() 
                     // Autoriser l'accès à /users/ sans authentification
                     .requestMatchers("/users/**").permitAll()
+                    
                     // Toute autre requête nécessite une authentification
                     .anyRequest().authenticated()
             );

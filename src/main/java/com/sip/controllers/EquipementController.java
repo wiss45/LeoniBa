@@ -60,4 +60,9 @@ public class EquipementController {
         equipementService.deleteEquipement(id);
         return ResponseEntity.noContent().build();
     }
+    
+    @GetMapping("/nombreEquipements")
+    public int nbreEquipements() {
+    	return this.equipementService.NombreEquipements();
+    }
 }

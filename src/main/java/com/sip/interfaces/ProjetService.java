@@ -25,4 +25,8 @@ public interface ProjetService {
 
 	List<Projet> getProjets();
 
+
+
+	int NombreProjets();
+
 }
