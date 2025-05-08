@@ -22,7 +22,6 @@ public class ProjetController {
 
     private final ProjetService projetService;
 
-   
     public ProjetController(ProjetService projetService) {
         this.projetService = projetService;
     }
@@ -40,12 +39,19 @@ public class ProjetController {
     }
 
     @GetMapping("/")
-    public List<Projet> getProjets() {
-        return projetService.getProjets();
+    public ResponseEntity<List<Projet>> getAllProjets() {
+        List<Projet> projets = projetService.getProjets();
+        return ResponseEntity.ok(projets);
     }
-    
+
+    @GetMapping("/draftprojets")
+    public ResponseEntity<List<Projet>> getApprovedProjets() {
+        List<Projet> projets = projetService.projetDRAFT();
+        return ResponseEntity.ok(projets);
+    }
+
     @GetMapping("/page")
-    public ResponseEntity<Map<String, Object>> getAllProjets(
+    public ResponseEntity<Map<String, Object>> getPagedProjets(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -54,15 +60,18 @@ public class ProjetController {
         return ResponseEntity.ok(response);
     }
 
+ 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProjet(@PathVariable Long id) {
         projetService.deleteProjet(id);
         return ResponseEntity.noContent().build();
     }
-    
+
     @GetMapping("/nombreProjets")
-    public int nbreProjets() {
-    	return this.projetService.NombreProjets();
+    public int getNombreProjetsActifs() {
+        int count = projetService.NombreProjets();
+        return count ;
     }
+    
 }

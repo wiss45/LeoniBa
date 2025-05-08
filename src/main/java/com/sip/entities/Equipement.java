@@ -34,7 +34,7 @@ public class Equipement {
     private Projet projet;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "equipements")
+    @OneToMany(mappedBy = "equipement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Plan> plans;
     
 

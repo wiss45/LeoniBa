@@ -1,5 +1,4 @@
 package com.sip.services;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,9 +10,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.sip.entities.Equipement;
 import com.sip.entities.Plan;
+import com.sip.entities.Projet;
 import com.sip.interfaces.PlanService;
 import com.sip.repositories.PlanRepository;
+import com.sip.repositories.ProjetRepository;
 import com.sip.requests.PlanRequest;
 import com.sip.responses.PlanResponse;
 
@@ -23,12 +25,16 @@ public class PlanServiceImp implements PlanService {
     @Autowired
     private PlanRepository planRepository;
 
+    @Autowired
+    private ProjetRepository projetRepository;
+
     @Override
-    public PlanResponse createPlan(PlanRequest request) {
-    	
+    public PlanResponse createPlan( PlanRequest request) {
+       
+
         Plan plan = new Plan();
         plan.setProjet(request.getProjet());
-        plan.setEquipements(request.getEquipements());
+        plan.setEquipement(request.getEquipement());
         plan.setOrderNumber(request.getOrderNumber());
         plan.setOrderPrice(request.getOrderPrice());
         plan.setPamNumber(request.getPamNumber());
@@ -38,10 +44,25 @@ public class PlanServiceImp implements PlanService {
         plan.setRprdate(request.getRprdate());
 
         Plan savedPlan = planRepository.save(plan);
-        System.out.println(savedPlan);
         return toResponse(savedPlan);
     }
+    
+    
+    @Override
+    public PlanResponse updatePlan( long id ,  PlanRequest request) {
+    	
+        Plan plan = this.planRepository.findById(id).orElseThrow(()-> new RuntimeException("Plan n'existe pas"+ id)) ;
+        plan.setOrderNumber(request.getOrderNumber());
+        plan.setOrderPrice(request.getOrderPrice());
+        plan.setPamNumber(request.getPamNumber());
+        plan.setQuantite(request.getQuantite());
+        plan.setTargetDate(request.getTargetDate());
+        plan.setDeliveryDate(request.getDeliveryDate());
+        plan.setRprdate(request.getRprdate());
 
+        Plan savedPlan = planRepository.save(plan);
+        return toResponse(savedPlan);
+    }
 
     @Override
     public Map<String, Object> getAllPlans(int page, int size) {
@@ -58,40 +79,54 @@ public class PlanServiceImp implements PlanService {
         response.put("currentPage", pagePlans.getNumber());
         response.put("totalItems", pagePlans.getTotalElements());
         response.put("totalPages", pagePlans.getTotalPages());
-        System.out.println(response);
+
         return response;
     }
 
+    
 
-    @Override
-    public PlanResponse updatePlan(Long id, PlanRequest request) {
-        Plan plan = planRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Plan not found with id: " + id));
-
-        plan.setProjet(request.getProjet());
-        plan.setEquipements(request.getEquipements());
-        plan.setOrderNumber(request.getOrderNumber());
-        plan.setOrderPrice(request.getOrderPrice());
-        plan.setPamNumber(request.getPamNumber());
-        plan.setQuantite(request.getQuantite());
-        plan.setTargetDate(request.getTargetDate());
-        plan.setDeliveryDate(request.getDeliveryDate());
-        plan.setRprdate(request.getRprdate());
-
-        return toResponse(planRepository.save(plan));
-    }
 
     @Override
     public void deletePlan(Long id) {
+        if (!planRepository.existsById(id)) {
+            throw new RuntimeException("Le plan avec ID " + id + " n'existe pas");
+        }
         planRepository.deleteById(id);
     }
+    
+   /* @Override
+    public int nombreEquipementsPlan(Long planId) {
+        return this.planRepository.countEquipementsByPlanId(planId);
+    }
+*/
+    
+    
+    @Override
+    public List<PlanResponse> getPlansByProjetId(Long projetId) {
+        List<Plan> plans = planRepository.findByProjetId(projetId);
 
+        return plans.stream()
+            .map(plan -> new PlanResponse(
+                plan.getId(),
+                plan.getProjet(),
+                plan.getEquipement(),
+                plan.getOrderNumber(),
+                plan.getOrderPrice(),
+                plan.getPamNumber(),
+                plan.getQuantite(),
+                plan.getTargetDate(),
+                plan.getDeliveryDate(),
+                plan.getRprdate()
+            ))
+            .collect(Collectors.toList());
+    }
+
+    
     private PlanResponse toResponse(Plan plan) {
         PlanResponse response = new PlanResponse();
-
         response.setId(plan.getId());
         response.setProjet(plan.getProjet());
-        response.setEquipements(plan.getEquipements());
+        response.setEquipement(plan.getEquipement());
         response.setOrderNumber(plan.getOrderNumber());
         response.setOrderPrice(plan.getOrderPrice());
         response.setPamNumber(plan.getPamNumber());
@@ -99,7 +134,8 @@ public class PlanServiceImp implements PlanService {
         response.setTargetDate(plan.getTargetDate());
         response.setDeliveryDate(plan.getDeliveryDate());
         response.setRprdate(plan.getRprdate());
-
         return response;
     }
+    
+    
 }

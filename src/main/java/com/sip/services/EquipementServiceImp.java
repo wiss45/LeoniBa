@@ -1,14 +1,20 @@
 package com.sip.services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sip.entities.Equipement;
 import com.sip.interfaces.EquipementService;
@@ -144,6 +150,44 @@ public class EquipementServiceImp implements EquipementService {
 		return this.equipementRepository.nombreEquipements();
 	}
 	
+	@Override
+    public Map<String, Object> importFromExcel(MultipartFile file) throws Exception {
+	        List<Equipement> equipements = new ArrayList<>();
+
+	        try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
+	            Sheet sheet = workbook.getSheetAt(0);
+
+	            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+	                Row row = sheet.getRow(i);
+	                if (row == null) continue;
+
+	                Equipement eq = new Equipement();
+	                eq.setName(row.getCell(0).getStringCellValue());
+	                eq.setFirstUnitPrice(row.getCell(1).getNumericCellValue());
+	                eq.setSecondUnitPrice(row.getCell(2).getNumericCellValue());
+	                eq.setThirdUnitPrice(row.getCell(3).getNumericCellValue());
+	                eq.setLeadTime((int) row.getCell(4).getNumericCellValue());
+	                eq.setTransportationTime((int) row.getCell(5).getNumericCellValue());
+	                eq.setInstallationTime((int) row.getCell(6).getNumericCellValue());
+	                eq.setSupplier(row.getCell(7).getStringCellValue());
+	                eq.setPrice(row.getCell(8).getNumericCellValue());
+	                eq.setCapexType(row.getCell(9).getStringCellValue());
+
+	                equipements.add(eq);
+	            }
+	        }
+
+	        equipementRepository.saveAll(equipements);
+	        return Map.of(
+	            "message", "Importation réussie",
+	            "count", equipements.size(),
+	            "replacedExisting", false
+	        );
+	    }
+	
+	
+	}
 
 
-}
+
+

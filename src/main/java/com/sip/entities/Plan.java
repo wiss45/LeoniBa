@@ -11,54 +11,47 @@ import jakarta.persistence.*;
 @Entity
 public class Plan {
 
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-	
-	
-	@JsonIgnore
-    @OneToOne
-	@JoinColumn(name = "projet_id") 
-	private Projet projet;
-    
-    
-    @JsonIgnore
-	@ManyToMany
-	@JoinTable(
-	name = "plan_equipements",
-	joinColumns = @JoinColumn(name = "plan_id"),
-	inverseJoinColumns = @JoinColumn(name = "equipement_id")
-	)
-	private List<Equipement> equipements;
-	
-	
-	private int orderNumber ;
-	private double orderPrice ;
-	private String pamNumber ;
-	private int quantite ;
-	private Date targetDate ;
-	private Date deliveryDate ;
-	private Date rprdate ;
-	
-	
-	public Plan(Projet projet, List<Equipement> equipements, int orderNumber, double orderPrice, String pamNumber,
-			int quantite, Date targetDate, Date deliveryDate, Date rprdate) {
-		
-		this.projet = projet;
-		this.equipements = equipements;
-		this.orderNumber = orderNumber;
-		this.orderPrice = orderPrice;
-		this.pamNumber = pamNumber;
-		this.quantite = quantite;
-		this.targetDate = targetDate;
-		this.deliveryDate = deliveryDate;
-		this.rprdate = rprdate;
-	}
+	 @Id
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    private Long id;
 
+	    private int orderNumber;
+	    private double orderPrice;
+	    private String pamNumber;
+	    private int quantite;
 
-	public Plan() {
-		
-	}
+	    @Temporal(TemporalType.DATE)
+	    private Date targetDate;
+	    @Temporal(TemporalType.DATE)
+	    private Date deliveryDate;
+	    @Temporal(TemporalType.DATE)
+	    private Date rprdate;
+
+	    @JsonIgnore
+	    @ManyToOne(fetch = FetchType.LAZY)
+	    @JoinColumn(name = "projet_id")
+	    private Projet projet;
+
+	    @JsonIgnore
+	    @ManyToOne(fetch = FetchType.LAZY)
+	    @JoinColumn(name = "equipement_id")
+	    private Equipement equipement;
+
+	    public Plan() {}
+
+	    public Plan(Projet projet, Equipement equipement, int orderNumber, double orderPrice,
+	                String pamNumber, int quantite, Date targetDate, Date deliveryDate, Date rprdate) {
+	        this.projet = projet;
+	        this.equipement = equipement;
+	        this.orderNumber = orderNumber;
+	        this.orderPrice = orderPrice;
+	        this.pamNumber = pamNumber;
+	        this.quantite = quantite;
+	        this.targetDate = targetDate;
+	        this.deliveryDate = deliveryDate;
+	        this.rprdate = rprdate;
+	    }
+
 
 
 	public Long getId() {
@@ -81,13 +74,13 @@ public class Plan {
 	}
 
 
-	public List<Equipement> getEquipements() {
-		return equipements;
+	public Equipement getEquipement() {
+		return equipement;
 	}
 
 
-	public void setEquipements(List<Equipement> equipements) {
-		this.equipements = equipements;
+	public void setEquipement(Equipement equipement) {
+		this.equipement = equipement;
 	}
 
 

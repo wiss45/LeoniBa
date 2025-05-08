@@ -18,7 +18,7 @@ public class PlanResponse {
 	
     private Long id;
 	private Projet projet;
-	private List<Equipement> equipements;
+	private Equipement equipement;
     private int orderNumber ;
 	private double orderPrice ;
 	private String pamNumber ;
@@ -28,11 +28,11 @@ public class PlanResponse {
 	private Date rprdate ;
 	
 	
-	public PlanResponse(Projet projet, List<Equipement> equipements, int orderNumber, double orderPrice, String pamNumber,
+	public PlanResponse(long id ,Projet projet, Equipement equipement, int orderNumber, double orderPrice, String pamNumber,
 			int quantite, Date targetDate, Date deliveryDate, Date rprdate) {
-		
+		this.id = id ;
 		this.projet = projet;
-		this.equipements = equipements;
+		this.equipement = equipement;
 		this.orderNumber = orderNumber;
 		this.orderPrice = orderPrice;
 		this.pamNumber = pamNumber;
@@ -68,13 +68,13 @@ public class PlanResponse {
 	}
 
 
-	public List<Equipement> getEquipements() {
-		return equipements;
+	public Equipement getEquipement() {
+		return equipement;
 	}
 
 
-	public void setEquipements(List<Equipement> equipements) {
-		this.equipements = equipements;
+	public void setEquipement(Equipement equipement) {
+		this.equipement = equipement;
 	}
 
 

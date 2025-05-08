@@ -7,11 +7,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sip.requests.EquipementRequest;
 import com.sip.responses.EquipementResponse;
 
 import com.sip.entities.Equipement;
+import com.sip.entities.ImportResult;
 import com.sip.interfaces.EquipementService;
 
 @CrossOrigin("*")
@@ -65,4 +67,28 @@ public class EquipementController {
     public int nbreEquipements() {
     	return this.equipementService.NombreEquipements();
     }
+    
+    @PostMapping("/import")
+    public ResponseEntity<ImportResult> importExcel(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body(new ImportResult("Fichier vide", 0, false));
+        }
+
+        try {
+            Map<String, Object> result = equipementService.importFromExcel(file);
+            ImportResult importResult = new ImportResult(
+                "Importation réussie", 
+                (int) result.get("count"), 
+                true
+            );
+            return ResponseEntity.ok(importResult);
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(500)
+                .body(new ImportResult("Erreur lors de l'importation : " + e.getMessage(), 0, false));
+        }
+    }
+
+
+    
 }

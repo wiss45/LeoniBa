@@ -14,45 +14,24 @@ public class ProjetResponse {
     private String customer;
     private String deravative;
     private double maxQuantite;
+
     private Date a_samples;
     private Date b_samples;
     private Date c_samples;
     private Date d_samples;
     private Date sop;
     private Date sop_1;
+
     private String responsable;
     private DrawingStatus status;
+
     private double sommePrevisionnel;
     private double sommeReel;
-    private List<Equipement> equipements;
-    private Plan plan ;
 
-    public ProjetResponse() {}
+    private List<Long> equipementIds;
+    private List<Long> planIds;
 
-    public ProjetResponse(Long id, String name, String customer, String deravative, double maxQuantite,
-                          Date a_samples, Date b_samples, Date c_samples, Date d_samples,
-                          Date sop, Date sop_1, String responsable, DrawingStatus status,
-                          double sommePrevisionnel, double sommeReel, List<Equipement> equipements, Plan plan) {
-        this.id = id;
-        this.name = name;
-        this.customer = customer;
-        this.deravative = deravative;
-        this.maxQuantite = maxQuantite;
-        this.a_samples = a_samples;
-        this.b_samples = b_samples;
-        this.c_samples = c_samples;
-        this.d_samples = d_samples;
-        this.sop = sop;
-        this.sop_1 = sop_1;
-        this.responsable = responsable;
-        this.status = status;
-        this.sommePrevisionnel = sommePrevisionnel;
-        this.sommeReel = sommeReel;
-        this.equipements = equipements;
-        this.plan = plan;
-    }
-
-   
+    // Getters & Setters
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -99,18 +78,46 @@ public class ProjetResponse {
     public double getSommeReel() { return sommeReel; }
     public void setSommeReel(double sommeReel) { this.sommeReel = sommeReel; }
 
-    public List<Equipement> getEquipements() { return equipements; }
-    public void setEquipements(List<Equipement> equipements) { this.equipements = equipements; }
+    public List<Long> getEquipementIds() {
+        return equipementIds;
+    }
 
-	public Plan getPlan() {
-		return plan;
+    public void setEquipementIds(List<Long> equipementIds) {
+        this.equipementIds = equipementIds;
+    }
+
+    public List<Long> getPlanIds() {
+        return planIds;
+    }
+
+    public void setPlanIds(List<Long> planIds) {
+        this.planIds = planIds;
+    }
+	public ProjetResponse(Long id, String name, String customer, String deravative, double maxQuantite, Date a_samples,
+			Date b_samples, Date c_samples, Date d_samples, Date sop, Date sop_1, String responsable,
+			DrawingStatus status, double sommePrevisionnel, double sommeReel) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.customer = customer;
+		this.deravative = deravative;
+		this.maxQuantite = maxQuantite;
+		this.a_samples = a_samples;
+		this.b_samples = b_samples;
+		this.c_samples = c_samples;
+		this.d_samples = d_samples;
+		this.sop = sop;
+		this.sop_1 = sop_1;
+		this.responsable = responsable;
+		this.status = status;
+		this.sommePrevisionnel = sommePrevisionnel;
+		this.sommeReel = sommeReel;
+		
 	}
-
-	public void setPlan(Plan plan) {
-		this.plan = plan;
+	
+	public ProjetResponse() {
+		super();
 	}
-
-
-
+    
     
 }

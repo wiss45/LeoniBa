@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sip.entities.Equipement;
 import com.sip.requests.EquipementRequest;
@@ -22,5 +23,7 @@ public interface EquipementService {
 	List<Equipement> getEquipements();
 
 	int NombreEquipements();
+
+	Map<String, Object> importFromExcel(MultipartFile file) throws Exception;
 
 }

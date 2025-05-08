@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 
 @RestController
-@RequestMapping("/api/import")
+@RequestMapping("/home/api/import")
 public class ImportController {
 
   @Autowired

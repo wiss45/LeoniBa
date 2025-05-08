@@ -8,24 +8,27 @@ import com.sip.entities.Plan;
 import com.sip.enums.DrawingStatus;
 
 public class ProjetRequest {
-    
+
     private String name;
     private String customer;
     private String deravative;
     private double maxQuantite;
+
     private Date a_samples;
     private Date b_samples;
     private Date c_samples;
     private Date d_samples;
     private Date sop;
     private Date sop_1;
+
     private String responsable;
     private DrawingStatus status;
+
     private double sommePrevisionnel;
     private double sommeReel;
-    private List<Equipement> equipements; 
-    private Plan plan;
-    
+
+    // Getters & Setters
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
@@ -67,15 +70,12 @@ public class ProjetRequest {
 
     public double getSommeReel() { return sommeReel; }
     public void setSommeReel(double sommeReel) { this.sommeReel = sommeReel; }
-
-    public List<Equipement> getEquipements() { return equipements; }
-    public void setEquipements(List<Equipement> equipements) { this.equipements = equipements; }
     
     
 	public ProjetRequest(String name, String customer, String deravative, double maxQuantite, Date a_samples,
 			Date b_samples, Date c_samples, Date d_samples, Date sop, Date sop_1, String responsable,
-			DrawingStatus status, double sommePrevisionnel, double sommeReel, List<Equipement> equipements,Plan plan) {
-		super();
+			DrawingStatus status, double sommePrevisionnel, double sommeReel) {
+		
 		this.name = name;
 		this.customer = customer;
 		this.deravative = deravative;
@@ -90,18 +90,14 @@ public class ProjetRequest {
 		this.status = status;
 		this.sommePrevisionnel = sommePrevisionnel;
 		this.sommeReel = sommeReel;
-		this.equipements = equipements;
-		this.plan = plan;
 	}
+	
 	public ProjetRequest() {
 		
 	}
-	public Plan getPlan() {
-		return plan;
-	}
-	public void setPlan(Plan plan) {
-		this.plan = plan;
-	}
+
+    
+	
     
 	
     

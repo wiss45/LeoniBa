@@ -11,22 +11,22 @@ import com.sip.responses.ProjetResponse;
 
 public interface ProjetService {
 
-	void deleteProjet(Long id);
-
-	
+	ProjetResponse createProjet(ProjetRequest request);
 
 	ProjetResponse updateProjet(Long id, ProjetRequest request);
 
-	ProjetResponse createProjet(ProjetRequest request);
+	List<Projet> getProjets();
 
 	Map<String, Object> getAllProjets(Pageable pageable);
 
-
-
-	List<Projet> getProjets();
-
-
+	void deleteProjet(Long id);
 
 	int NombreProjets();
+
+	List<Projet> projetDRAFT();
+
+	
+
+	
 
 }

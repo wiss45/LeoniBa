@@ -4,68 +4,75 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sip.enums.DrawingStatus;
 
 
 import jakarta.persistence.*;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Projet {
 	    
 	
-	    @Id
+	   @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
+
 	    private String name;
 	    private String customer;
 	    private String deravative;
 	    private double maxQuantite;
+
+	    @Temporal(TemporalType.DATE)
 	    private Date a_samples;
+	    @Temporal(TemporalType.DATE)
 	    private Date b_samples;
+	    @Temporal(TemporalType.DATE)
 	    private Date c_samples;
+	    @Temporal(TemporalType.DATE)
 	    private Date d_samples;
+	    @Temporal(TemporalType.DATE)
 	    private Date sop;
+	    @Temporal(TemporalType.DATE)
 	    private Date sop_1;
+
 	    private String responsable;
+
 	    @Enumerated(EnumType.STRING)
 	    private DrawingStatus status;
+
 	    private double sommePrevisionnel;
-	    private double sommeReel;
-        
+	    private double sommeReel;        
 	    
 	    @JsonIgnore
 	    @OneToMany(mappedBy = "projet", cascade = CascadeType.ALL, orphanRemoval = true ,fetch = FetchType.EAGER)
 	    private List<Equipement> equipements;
         
 	    @JsonIgnore
-	    @OneToOne(mappedBy = "projet", cascade = CascadeType.ALL , fetch = FetchType.EAGER)
-	    private Plan plan;
+	    @OneToMany(mappedBy = "projet", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<Plan> plans;
 	    
 	    public Projet() {}
 
-	    public Projet(String name, String customer, String deravative, double maxQuantite,
-	                         Date a_samples, Date b_samples, Date c_samples, Date d_samples,
-	                         Date sop, Date sop_1, String responsable, DrawingStatus status,
-	                         double sommePrevisionnel, double sommeReel,
-	                         List<Equipement> equipements, Plan plan) {
-	        this.name = name;
-	        this.customer = customer;
-	        this.deravative = deravative;
-	        this.maxQuantite = maxQuantite;
-	        this.a_samples = a_samples;
-	        this.b_samples = b_samples;
-	        this.c_samples = c_samples;
-	        this.d_samples = d_samples;
-	        this.sop = sop;
-	        this.sop_1 = sop_1;
-	        this.responsable = responsable;
-	        this.status = status;
-	        this.sommePrevisionnel = sommePrevisionnel;
-	        this.sommeReel = sommeReel;
-	        this.equipements = equipements;
-	        this.plan = plan;
-	    }
-
+	    public Projet(String name, String customer, String deravative, double maxQuantite, Date a_samples, Date b_samples,
+                Date c_samples, Date d_samples, Date sop, Date sop_1, String responsable,
+                DrawingStatus status, double sommePrevisionnel, double sommeReel) {
+      this.name = name;
+      this.customer = customer;
+      this.deravative = deravative;
+      this.maxQuantite = maxQuantite;
+      this.a_samples = a_samples;
+      this.b_samples = b_samples;
+      this.c_samples = c_samples;
+      this.d_samples = d_samples;
+      this.sop = sop;
+      this.sop_1 = sop_1;
+      this.responsable = responsable;
+      this.status = status;
+      this.sommePrevisionnel = sommePrevisionnel;
+      this.sommeReel = sommeReel;
+  }
 	    
 	    
 	    
@@ -127,13 +134,15 @@ public class Projet {
 	        this.equipements = equipements;
 	    }
 
-		public Plan getPlan() {
-			return plan;
+		public List<Plan> getPlans() {
+			return plans;
 		}
 
-		public void setPlan(Plan plan) {
-			this.plan = plan;
+		public void setPlans(List<Plan> plans) {
+			this.plans = plans;
 		}
+
+		
 
 	
 	    

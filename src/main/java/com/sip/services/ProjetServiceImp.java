@@ -12,184 +12,155 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.sip.entities.Equipement;
+import com.sip.entities.Plan;
 import com.sip.entities.Projet;
 import com.sip.interfaces.ProjetService;
 import com.sip.repositories.EquipementRepository;
+import com.sip.repositories.PlanRepository;
 import com.sip.repositories.ProjetRepository;
 import com.sip.requests.ProjetRequest;
 import com.sip.responses.ProjetResponse;
 
 @Service
-public class ProjetServiceImp implements ProjetService  {
-	  
-	
-	    
-	    private final ProjetRepository projetRepository;
+public class ProjetServiceImp implements ProjetService {
 
-	    
-	    private final EquipementRepository equipementRepository;
+    private final ProjetRepository projetRepository;
+    private final EquipementRepository equipementRepository;
+    private final PlanRepository planRepository; 
 
-	    
-	    
-	    public ProjetServiceImp(ProjetRepository projetRepository, EquipementRepository equipementRepository) {
-			
-			this.projetRepository = projetRepository;
-			this.equipementRepository = equipementRepository;
-		}
+    public ProjetServiceImp(ProjetRepository projetRepository, EquipementRepository equipementRepository, PlanRepository planRepository) {
+        this.projetRepository = projetRepository;
+        this.equipementRepository = equipementRepository;
+        this.planRepository = planRepository;
+    }
 
-	    @Override
-	    public ProjetResponse createProjet(ProjetRequest request) {
-	        Projet projet = mapToEntity(request);
+    @Override
+    public ProjetResponse createProjet(ProjetRequest request) {
+        Projet projet = new Projet();
+        projet.setName(request.getName());
+        projet.setCustomer(request.getCustomer());
+        projet.setDeravative(request.getDeravative());
+        projet.setMaxQuantite(request.getMaxQuantite());
+        projet.setA_samples(request.getA_samples());
+        projet.setB_samples(request.getB_samples());
+        projet.setC_samples(request.getC_samples());
+        projet.setD_samples(request.getD_samples());
+        projet.setSop(request.getSop());
+        projet.setSop_1(request.getSop_1());
+        projet.setResponsable(request.getResponsable());
+        projet.setStatus(request.getStatus());
+        projet.setSommePrevisionnel(request.getSommePrevisionnel());
+        projet.setSommeReel(0.0);
+        
+        Projet saved = projetRepository.save(projet);
+        return mapToResponse(saved);
+    }
 
-	        
-	        if (request.getEquipements() != null) {
-	            List<Equipement> equipements = new ArrayList<>();
-	            for (Equipement equipement : request.getEquipements()) {
-	                if (equipement.getId() != null) {
-	                    
-	                    Equipement existingEquipement = equipementRepository.findById(equipement.getId())
-	                            .orElseThrow(() -> new IllegalArgumentException("Équipement non trouvé"));
-	                    existingEquipement.setProjet(projet); 
-	                    equipements.add(existingEquipement);
-	                } else {
-	                    
-	                    equipement.setProjet(projet); 
-	                    equipements.add(equipement);
-	                }
-	            }
-	            projet.setEquipements(equipements);
-	        }
+    @Override
+    public ProjetResponse updateProjet(Long id, ProjetRequest request) {
+        Projet projet = projetRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Projet non trouvé avec l'id " + id));
 
-	        
-	        Projet saved = projetRepository.save(projet);
-	        return mapToResponse(saved);
-	    }
+        projet.setName(request.getName());
+        projet.setCustomer(request.getCustomer());
+        projet.setDeravative(request.getDeravative());
+        projet.setMaxQuantite(request.getMaxQuantite());
+        projet.setA_samples(request.getA_samples());
+        projet.setB_samples(request.getB_samples());
+        projet.setC_samples(request.getC_samples());
+        projet.setD_samples(request.getD_samples());
+        projet.setSop(request.getSop());
+        projet.setSop_1(request.getSop_1());
+        projet.setResponsable(request.getResponsable());
+        projet.setStatus(request.getStatus());
+        projet.setSommePrevisionnel(request.getSommePrevisionnel());
+        projet.setSommeReel(request.getSommeReel());
 
+       
 
-	    @Override
-	    public ProjetResponse updateProjet(Long id, ProjetRequest request) {
-	        Optional<Projet> optional = projetRepository.findById(id);
-	        if (optional.isEmpty()) {
-	            throw new RuntimeException("Projet not found with id " + id);
-	        }
+        Projet updated = projetRepository.save(projet);
+        return mapToResponse(updated);
+    }
 
-	        Projet projet = optional.get();
+    @Override
+    public List<Projet> getProjets() {
+        return projetRepository.findAll();
+    }
 
-	        projet.setName(request.getName());
-	        projet.setCustomer(request.getCustomer());
-	        projet.setDeravative(request.getDeravative());
-	        projet.setMaxQuantite(request.getMaxQuantite());
-	        projet.setA_samples(request.getA_samples());
-	        projet.setB_samples(request.getB_samples());
-	        projet.setC_samples(request.getC_samples());
-	        projet.setD_samples(request.getD_samples());
-	        projet.setSop(request.getSop());
-	        projet.setSop_1(request.getSop_1());
-	        projet.setResponsable(request.getResponsable());
-	        projet.setStatus(request.getStatus());
-	        projet.setSommePrevisionnel(request.getSommePrevisionnel());
-	        projet.setSommeReel(request.getSommeReel());
-	        projet.setEquipements(request.getEquipements());
+    @Override
+    public Map<String, Object> getAllProjets(Pageable pageable) {
+        Page<Projet> pageProjets = projetRepository.findAll(pageable);
 
-	        
+        List<ProjetResponse> content = pageProjets.getContent().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
 
-	        Projet updated = projetRepository.save(projet);
-	        return mapToResponse(updated);
-	    }
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", content);
+        response.put("currentPage", pageProjets.getNumber());
+        response.put("totalElements", pageProjets.getTotalElements());
+        response.put("totalPages", pageProjets.getTotalPages());
 
-	    
-	    @Override
-	    public List<Projet> getProjets() {
-	        return projetRepository.findAll();
-	    }
+        return response;
+    }
 
-	    @Override
-	    public Map<String, Object> getAllProjets(Pageable pageable) {
-	        Page<Projet> pageProjets = projetRepository.findAll(pageable);
+    @Override
+    public void deleteProjet(Long id) {
+        projetRepository.deleteById(id);
+    }
 
-	        List<ProjetResponse> content = pageProjets.getContent().stream()
-	                .map(this::mapToResponse)
-	                .collect(Collectors.toList());
+    private ProjetResponse mapToResponse(Projet projet) {
+       
 
-	        Map<String, Object> response = new HashMap<>();
-	        response.put("content", content);
-	        response.put("currentPage", pageProjets.getNumber());
-	        response.put("totalElements", pageProjets.getTotalElements());
-	        response.put("totalPages", pageProjets.getTotalPages());
+        return new ProjetResponse(
+                projet.getId(),
+                projet.getName(),
+                projet.getCustomer(),
+                projet.getDeravative(),
+                projet.getMaxQuantite(),
+                projet.getA_samples(),
+                projet.getB_samples(),
+                projet.getC_samples(),
+                projet.getD_samples(),
+                projet.getSop(),
+                projet.getSop_1(),
+                projet.getResponsable(),
+                projet.getStatus(),
+                projet.getSommePrevisionnel(),
+                projet.getSommeReel()
+        );
+    }
 
-	        return response;
-	    }
+    private Projet mapToEntity(ProjetRequest request) {
+        Projet projet = new Projet(
+                request.getName(),
+                request.getCustomer(),
+                request.getDeravative(),
+                request.getMaxQuantite(),
+                request.getA_samples(),
+                request.getB_samples(),
+                request.getC_samples(),
+                request.getD_samples(),
+                request.getSop(),
+                request.getSop_1(),
+                request.getResponsable(),
+                request.getStatus(),
+                request.getSommePrevisionnel(),
+                request.getSommeReel()
+        );
 
+       
+        return projet;
+    }
 
-	    @Override
-	    public void deleteProjet(Long id) {
-	        projetRepository.deleteById(id);
-	    }
-
-	    private ProjetResponse mapToResponse(Projet projet) {
-	        List<Equipement> allEquipements = new ArrayList<>();
-
-	        // Équipements liés directement au projet
-	        if (projet.getEquipements() != null) {
-	            allEquipements.addAll(projet.getEquipements());
-	        }
-
-	        // Équipements liés via le plan
-	        if (projet.getPlan() != null && projet.getPlan().getEquipements() != null) {
-	            for (Equipement eq : projet.getPlan().getEquipements()) {
-	                if (!allEquipements.contains(eq)) {
-	                    allEquipements.add(eq);
-	                }
-	            }
-	        }
-
-	        return new ProjetResponse(
-	            projet.getId(),
-	            projet.getName(),
-	            projet.getCustomer(),
-	            projet.getDeravative(),
-	            projet.getMaxQuantite(),
-	            projet.getA_samples(),
-	            projet.getB_samples(),
-	            projet.getC_samples(),
-	            projet.getD_samples(),
-	            projet.getSop(),
-	            projet.getSop_1(),
-	            projet.getResponsable(),
-	            projet.getStatus(),
-	            projet.getSommePrevisionnel(),
-	            projet.getSommeReel(),
-	            allEquipements,
-	            projet.getPlan()
-	        );
-	    }
-
-
-	    
-	    private Projet mapToEntity(ProjetRequest request) {
-	        return new Projet(
-	            request.getName(),
-	            request.getCustomer(),
-	            request.getDeravative(),
-	            request.getMaxQuantite(),
-	            request.getA_samples(),
-	            request.getB_samples(),
-	            request.getC_samples(),
-	            request.getD_samples(),
-	            request.getSop(),
-	            request.getSop_1(),
-	            request.getResponsable(),
-	            request.getStatus(),
-	            request.getSommePrevisionnel(),
-	            request.getSommeReel(),
-	            request.getEquipements(),
-	            request.getPlan()
-	        );
-	    }
-
-		@Override
-		public int NombreProjets() {
-			return this.projetRepository.nombreProjetsActifs();
-		}
-	  
+    @Override
+    public int NombreProjets() {
+        return this.projetRepository.nombreProjetsActifs();
+    }
+    
+    @Override 
+    public List<Projet> projetDRAFT (){
+    	List<Projet> projetsDraft =  this.projetRepository.listprojetsDRAFT();
+    	return projetsDraft ;
+    }
 }

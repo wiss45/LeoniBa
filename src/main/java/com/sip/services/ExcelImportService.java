@@ -116,7 +116,7 @@ public class ExcelImportService {
             if (replaceExisting) {
                 List<Equipement> existingEquipment = equipmentRepository.findAll();
                 existingEquipment.forEach(eq -> {
-                    long activePlanCount = planRepository.countByEquipements(eq);
+                    long activePlanCount = planRepository.countByEquipement(eq);
                     if (activePlanCount > 0) {
                         eq.setActive(false);
                         equipmentRepository.save(eq);
