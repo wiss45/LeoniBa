@@ -1,5 +1,6 @@
 package com.sip.repositories;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,5 +21,7 @@ public interface PlanRepository extends JpaRepository<Plan,Long> {
    
 	List<Plan> findByProjetId(Long projetId);
 
+	/*List<Plan> findByDateLivraisonAndNotificationEnvoyeeFalse(LocalDate date);*/
+	
 
 }

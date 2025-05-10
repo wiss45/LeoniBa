@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sip.entities.Equipement;
 import com.sip.entities.Projet;
+import com.sip.enums.StatutEquipement;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,10 +27,10 @@ public class PlanResponse {
 	private Date targetDate ;
 	private Date deliveryDate ;
 	private Date rprdate ;
-	
+	private StatutEquipement statut;
 	
 	public PlanResponse(long id ,Projet projet, Equipement equipement, int orderNumber, double orderPrice, String pamNumber,
-			int quantite, Date targetDate, Date deliveryDate, Date rprdate) {
+			int quantite, Date targetDate, Date deliveryDate, Date rprdate , StatutEquipement statut) {
 		this.id = id ;
 		this.projet = projet;
 		this.equipement = equipement;
@@ -40,6 +41,7 @@ public class PlanResponse {
 		this.targetDate = targetDate;
 		this.deliveryDate = deliveryDate;
 		this.rprdate = rprdate;
+		this.statut = statut ;
 	}
 
 
@@ -145,6 +147,16 @@ public class PlanResponse {
 
 	public void setRprdate(Date rprdate) {
 		this.rprdate = rprdate;
+	}
+
+
+	public StatutEquipement getStatut() {
+		return statut;
+	}
+
+
+	public void setStatut(StatutEquipement statut) {
+		this.statut = statut;
 	}
 	
 	

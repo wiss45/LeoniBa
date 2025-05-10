@@ -11,6 +11,7 @@ import com.sip.entities.User;
 public interface UserRepository extends JpaRepository<User,Long> {
 
 	User findByEmail (String email);
+	
 	Optional<User> findUserByUsername (String username);
 
 	@Query("SELECT COUNT(u) FROM User u WHERE u.enabled = false")

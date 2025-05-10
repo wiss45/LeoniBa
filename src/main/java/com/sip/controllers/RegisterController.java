@@ -54,6 +54,12 @@ public class RegisterController {
     	return this.registerService.listUsers();
     }
     
+    @GetMapping("/allusers")
+    public List<User> getusers () {
+    	return this.registerService.getUsers();
+    }
+    
+    
     @PutMapping("/{id}")
     public RegisterResponse activeUser(@PathVariable long id) {
     	return this.registerService.activateUser(id);

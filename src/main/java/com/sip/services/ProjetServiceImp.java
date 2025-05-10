@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.sip.entities.Equipement;
@@ -89,19 +91,51 @@ public class ProjetServiceImp implements ProjetService {
 
     @Override
     public Map<String, Object> getAllProjets(Pageable pageable) {
-        Page<Projet> pageProjets = projetRepository.findAll(pageable);
+    	
+    	// Récupère l'objet d'authentification de l'utilisateur actuellement connecté
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        List<ProjetResponse> content = pageProjets.getContent().stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+    	// Récupère le nom d'utilisateur (username) de l'utilisateur connecté
+    	String currentUsername = authentication.getName();
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("content", content);
-        response.put("currentPage", pageProjets.getNumber());
-        response.put("totalElements", pageProjets.getTotalElements());
-        response.put("totalPages", pageProjets.getTotalPages());
+    	// Vérifie si l'utilisateur a le rôle "ADMIN"
+    	boolean isAdmin = authentication.getAuthorities().stream()
+    	    .anyMatch(auth -> auth.getAuthority().equals("ADMIN"));
 
-        return response;
+    	// Déclare une variable pour stocker la page de projets à retourner
+    	Page<Projet> pageProjets;
+
+    	// Si l'utilisateur est un administrateur, on récupère tous les projets avec pagination
+    	if (isAdmin) {
+    	    pageProjets = projetRepository.findAll(pageable);
+    	} else {
+    	    // Sinon, on récupère uniquement les projets dont il est le responsable
+    	    pageProjets = projetRepository.findByResponsable(currentUsername, pageable);
+    	}
+
+    	// Transforme la liste d'entités Projet en liste de DTO ProjetResponse
+    	// La méthode mapToResponse convertit un Projet vers un ProjetResponse (format allégé pour l'API)
+    	List<ProjetResponse> content = pageProjets.getContent().stream()
+    	    .map(this::mapToResponse)
+    	    .collect(Collectors.toList());
+
+    	// Crée un objet Map pour stocker les données à retourner au client (souvent sous forme JSON)
+    	Map<String, Object> response = new HashMap<>();
+
+    	// Ajoute la liste de projets transformés à la réponse
+    	response.put("content", content);
+
+    	// Ajoute le numéro de la page actuelle
+    	response.put("currentPage", pageProjets.getNumber());
+
+    	// Ajoute le nombre total d'éléments (projets) disponibles dans la base
+    	response.put("totalElements", pageProjets.getTotalElements());
+
+    	// Ajoute le nombre total de pages disponibles en fonction de la taille de page demandée
+    	response.put("totalPages", pageProjets.getTotalPages());
+
+    	// Retourne la réponse complète, qui sera convertie automatiquement en JSON si utilisée dans un contrôleur REST
+    	return response;
     }
 
     @Override
@@ -163,4 +197,11 @@ public class ProjetServiceImp implements ProjetService {
     	List<Projet> projetsDraft =  this.projetRepository.listprojetsDRAFT();
     	return projetsDraft ;
     }
+    
+    @Override
+    public Page<ProjetResponse> findByResponsable(String responsable, Pageable pageable) {
+        return projetRepository.findByResponsableContainingIgnoreCase(responsable, pageable)
+                .map(this::mapToResponse);
+    }
+
 }

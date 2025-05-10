@@ -19,4 +19,6 @@ public interface RegisterService {
 
 	RegisterResponse activateUser(long id);
 
+	List<User> getUsers();
+
 }

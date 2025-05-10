@@ -30,6 +30,10 @@ public interface PlanService {
 
 	List<PlanResponse> getPlansByProjetId(Long projetId);
 
+	Plan getPlanById(long id);
+
+	List<Plan> getAllPlans();
+
 	
 
 }

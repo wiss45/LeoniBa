@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import com.sip.entities.Equipement;
 import com.sip.entities.Projet;
+import com.sip.enums.StatutEquipement;
 
 public class PlanRequest {
     private Projet projet;
@@ -15,12 +16,13 @@ public class PlanRequest {
     private Date targetDate;
     private Date deliveryDate;
     private Date rprdate;
-
+    private StatutEquipement statut;
+    
     public PlanRequest() {}
 
     public PlanRequest(Projet projet ,Equipement equipement, int orderNumber, double orderPrice,
                        String pamNumber, int quantite, Date targetDate,
-                       Date deliveryDate, Date rprdate) {
+                       Date deliveryDate, Date rprdate , StatutEquipement statut) {
     	this.projet = projet ;
         this.equipement = equipement;
         this.orderNumber = orderNumber;
@@ -30,6 +32,7 @@ public class PlanRequest {
         this.targetDate = targetDate;
         this.deliveryDate = deliveryDate;
         this.rprdate = rprdate;
+        this.statut = statut ;
     }
 
     
@@ -106,4 +109,14 @@ public class PlanRequest {
     public void setRprdate(Date rprdate) {
         this.rprdate = rprdate;
     }
+
+	public StatutEquipement getStatut() {
+		return statut;
+	}
+
+	public void setStatut(StatutEquipement statut) {
+		this.statut = statut;
+	}
+    
+    
 }

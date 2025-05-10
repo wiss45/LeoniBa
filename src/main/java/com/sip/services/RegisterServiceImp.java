@@ -140,4 +140,10 @@ public class RegisterServiceImp implements RegisterService {
             "User activated successfully"
         );
     }
+    
+    @Override
+    public List<User> getUsers(){
+    	return this.userRepository.findAll();
+    }
+    
 }

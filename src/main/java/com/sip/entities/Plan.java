@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sip.enums.StatutEquipement;
 
 import jakarta.persistence.*;
 
@@ -37,6 +38,10 @@ public class Plan {
 	    @JoinColumn(name = "equipement_id")
 	    private Equipement equipement;
 
+	    @Enumerated(EnumType.STRING)
+	    private StatutEquipement statut;
+	    
+	    
 	    public Plan() {}
 
 	    public Plan(Projet projet, Equipement equipement, int orderNumber, double orderPrice,
@@ -151,6 +156,14 @@ public class Plan {
 
 	public void setRprdate(Date rprdate) {
 		this.rprdate = rprdate;
+	}
+
+	public StatutEquipement getStatut() {
+		return statut;
+	}
+
+	public void setStatut(StatutEquipement statut) {
+		this.statut = statut;
 	}
 	
 	

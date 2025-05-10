@@ -23,11 +23,17 @@ public class PlanController {
     }
 
     
+    @GetMapping("/allplans")
+    public List<Plan> getAlllPlans (){
+    	return this.planService.getAllPlans();
+    }
+    
     @PostMapping("/")
     public ResponseEntity<PlanResponse> createPlan( @RequestBody PlanRequest request) {
         PlanResponse response = planService.createPlan( request);
         return ResponseEntity.ok(response);
     }
+    
     
     @PutMapping("/{id}")
     public ResponseEntity<PlanResponse> updatePlan(@PathVariable long id , @RequestBody PlanRequest request) {
@@ -62,5 +68,9 @@ public class PlanController {
     public List<PlanResponse> getPlansByProjetId(@PathVariable Long projetId) {
         return planService.getPlansByProjetId(projetId);
     }
-    
+
+    @GetMapping("/{id}")
+    public Plan getPlanById ( @PathVariable long id) {
+    	return this.planService.getPlanById(id);
+    }
 }

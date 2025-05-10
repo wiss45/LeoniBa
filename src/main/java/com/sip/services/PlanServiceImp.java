@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import com.sip.entities.Equipement;
 import com.sip.entities.Plan;
 import com.sip.entities.Projet;
+import com.sip.enums.StatutEquipement;
 import com.sip.interfaces.PlanService;
+import com.sip.repositories.EquipementRepository;
 import com.sip.repositories.PlanRepository;
 import com.sip.repositories.ProjetRepository;
 import com.sip.requests.PlanRequest;
@@ -24,7 +26,12 @@ public class PlanServiceImp implements PlanService {
 
     @Autowired
     private PlanRepository planRepository;
-
+  
+    
+    @Autowired
+    private EquipementRepository equipementRepository;
+    
+    
     @Autowired
     private ProjetRepository projetRepository;
 
@@ -42,16 +49,19 @@ public class PlanServiceImp implements PlanService {
         plan.setTargetDate(request.getTargetDate());
         plan.setDeliveryDate(request.getDeliveryDate());
         plan.setRprdate(request.getRprdate());
-
+        plan.setStatut(StatutEquipement.EN_ATTENTE);
         Plan savedPlan = planRepository.save(plan);
         return toResponse(savedPlan);
     }
     
     
     @Override
-    public PlanResponse updatePlan( long id ,  PlanRequest request) {
-    	
-        Plan plan = this.planRepository.findById(id).orElseThrow(()-> new RuntimeException("Plan n'existe pas"+ id)) ;
+    public PlanResponse updatePlan(long id, PlanRequest request) {
+
+        Plan plan = this.planRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Plan n'existe pas : " + id));
+
+       
         plan.setOrderNumber(request.getOrderNumber());
         plan.setOrderPrice(request.getOrderPrice());
         plan.setPamNumber(request.getPamNumber());
@@ -59,10 +69,26 @@ public class PlanServiceImp implements PlanService {
         plan.setTargetDate(request.getTargetDate());
         plan.setDeliveryDate(request.getDeliveryDate());
         plan.setRprdate(request.getRprdate());
+        plan.setStatut(request.getStatut());
+
+        // Mettre à jour le projet (si fourni)
+        if (request.getProjet() != null && request.getProjet().getId() != null) {
+            Projet projet = projetRepository.findById(request.getProjet().getId())
+                .orElseThrow(() -> new RuntimeException("Projet non trouvé : " + request.getProjet().getId()));
+            plan.setProjet(projet);
+        }
+
+        // Mettre à jour l’équipement (si fourni)
+        if (request.getEquipement() != null && request.getEquipement().getId() != null) {
+            Equipement equipement = equipementRepository.findById(request.getEquipement().getId())
+                .orElseThrow(() -> new RuntimeException("Équipement non trouvé : " + request.getEquipement().getId()));
+            plan.setEquipement(equipement);
+        }
 
         Plan savedPlan = planRepository.save(plan);
         return toResponse(savedPlan);
     }
+
 
     @Override
     public Map<String, Object> getAllPlans(int page, int size) {
@@ -83,7 +109,11 @@ public class PlanServiceImp implements PlanService {
         return response;
     }
 
-    
+    @Override
+    public Plan getPlanById(long id) {
+    	Plan plan = this.planRepository.findById(id).orElseThrow(()->new RuntimeException ("Plan n'existe pas" + id));
+    	return plan ;
+    }
 
 
     @Override
@@ -116,7 +146,8 @@ public class PlanServiceImp implements PlanService {
                 plan.getQuantite(),
                 plan.getTargetDate(),
                 plan.getDeliveryDate(),
-                plan.getRprdate()
+                plan.getRprdate(),
+                plan.getStatut()
             ))
             .collect(Collectors.toList());
     }
@@ -134,8 +165,15 @@ public class PlanServiceImp implements PlanService {
         response.setTargetDate(plan.getTargetDate());
         response.setDeliveryDate(plan.getDeliveryDate());
         response.setRprdate(plan.getRprdate());
+        response.setStatut(plan.getStatut());
         return response;
     }
     
+    
+    @Override
+    public List<Plan> getAllPlans(){
+    	List<Plan> plans = this.planRepository.findAll();
+    	return plans ;
+    }
     
 }

@@ -5,7 +5,7 @@ import com.sip.interfaces.ProjetService;
 import com.sip.requests.ProjetRequest;
 import com.sip.responses.ProjetResponse;
 
-
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -53,14 +53,23 @@ public class ProjetController {
     @GetMapping("/page")
     public ResponseEntity<Map<String, Object>> getPagedProjets(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "6") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
         Map<String, Object> response = projetService.getAllProjets(pageable);
         return ResponseEntity.ok(response);
     }
 
- 
+    @GetMapping("/by-responsable")
+    public Page<ProjetResponse> getProjetsByResponsable(
+        @RequestParam String responsable,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "6") int size) {
+        
+        Pageable pageable = PageRequest.of(page, size);
+        return projetService.findByResponsable(responsable, pageable);
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProjet(@PathVariable Long id) {
