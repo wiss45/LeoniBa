@@ -171,9 +171,12 @@ public class PlanServiceImp implements PlanService {
     
     
     @Override
-    public List<Plan> getAllPlans(){
-    	List<Plan> plans = this.planRepository.findAll();
-    	return plans ;
+    public List<PlanResponse> getAllPlans() {
+        List<Plan> plans = this.planRepository.findAll();
+        return plans.stream()
+            .map(this::toResponse) 
+            .collect(Collectors.toList());
     }
+
     
 }

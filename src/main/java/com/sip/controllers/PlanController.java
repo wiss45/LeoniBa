@@ -24,7 +24,7 @@ public class PlanController {
 
     
     @GetMapping("/allplans")
-    public List<Plan> getAlllPlans (){
+    public List<PlanResponse> getAlllPlans (){
     	return this.planService.getAllPlans();
     }
     

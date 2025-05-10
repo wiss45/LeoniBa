@@ -32,7 +32,9 @@ public interface PlanService {
 
 	Plan getPlanById(long id);
 
-	List<Plan> getAllPlans();
+	List<PlanResponse> getAllPlans();
+
+
 
 	
 
