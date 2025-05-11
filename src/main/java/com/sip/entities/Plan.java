@@ -20,7 +20,7 @@ public class Plan {
 	    private double orderPrice;
 	    private String pamNumber;
 	    private int quantite;
-
+  
 	    @Temporal(TemporalType.DATE)
 	    private Date targetDate;
 	    @Temporal(TemporalType.DATE)

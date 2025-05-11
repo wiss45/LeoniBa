@@ -21,4 +21,8 @@ public interface RegisterService {
 
 	List<User> getUsers();
 
+	RegisterResponse updateUser(RegisterRequest request);
+
+	
+
 }
