@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.sip.entities.Plan;
+import com.sip.enums.StatutEquipement;
 import com.sip.interfaces.PlanService;
 import com.sip.requests.PlanRequest;
 import com.sip.responses.PlanResponse;
@@ -72,5 +73,10 @@ public class PlanController {
     @GetMapping("/{id}")
     public Plan getPlanById ( @PathVariable long id) {
     	return this.planService.getPlanById(id);
+    }
+    
+    @GetMapping("/statut-par-projet")
+    public Map<Long, Map<StatutEquipement, Long>> getPlanCountsByStatutPerProjet() {
+        return planService.countPlansByStatutPerProjet();
     }
 }

@@ -118,6 +118,7 @@ public class SecurityConfiguration {
                 auth.requestMatchers("/auth/**").permitAll() 
                     // Autoriser l'accès à /users/ sans authentification
                     .requestMatchers("/users/**").permitAll()
+                    .requestMatchers("/plans/**").permitAll()
                    
                     
                     

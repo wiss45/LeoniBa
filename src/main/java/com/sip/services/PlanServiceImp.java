@@ -15,6 +15,7 @@ import com.sip.entities.Plan;
 import com.sip.entities.Projet;
 import com.sip.enums.StatutEquipement;
 import com.sip.interfaces.PlanService;
+import com.sip.interfaces.StatutCountPerProjet;
 import com.sip.repositories.EquipementRepository;
 import com.sip.repositories.PlanRepository;
 import com.sip.repositories.ProjetRepository;
@@ -177,6 +178,20 @@ public class PlanServiceImp implements PlanService {
             .map(this::toResponse) 
             .collect(Collectors.toList());
     }
+    
+    @Override
+    public Map<Long, Map<StatutEquipement, Long>> countPlansByStatutPerProjet() {
+        List<StatutCountPerProjet> results = planRepository.countPlansByStatutPerProjet();
 
+        Map<Long, Map<StatutEquipement, Long>> groupedData = new HashMap<>();
+
+        for (StatutCountPerProjet row : results) {
+            groupedData
+                .computeIfAbsent(row.getProjetId(), k -> new HashMap<>())
+                .put(row.getStatut(), row.getCount());
+        }
+
+        return groupedData;
+    }
     
 }

@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import com.sip.entities.Equipement;
 import com.sip.entities.Plan;
 import com.sip.entities.Projet;
+import com.sip.interfaces.StatutCountPerProjet;
 import com.sip.responses.PlanResponse;
 
 public interface PlanRepository extends JpaRepository<Plan,Long> {
@@ -21,6 +22,11 @@ public interface PlanRepository extends JpaRepository<Plan,Long> {
    
 	List<Plan> findByProjetId(Long projetId);
 
+	@Query("SELECT p.projet.id as projetId, p.projet.name as projetName, p.statut as statut, COUNT(p) as count " +
+		       "FROM Plan p GROUP BY p.projet.id, p.projet.name, p.statut")
+		List<StatutCountPerProjet> countPlansByStatutPerProjet();
+
+	
 	/*List<Plan> findByDateLivraisonAndNotificationEnvoyeeFalse(LocalDate date);*/
 	
 

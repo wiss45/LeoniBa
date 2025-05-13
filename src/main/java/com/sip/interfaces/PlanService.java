@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sip.entities.Plan;
+import com.sip.enums.StatutEquipement;
 import com.sip.requests.PlanRequest;
 import com.sip.responses.PlanResponse;
 
@@ -33,6 +34,11 @@ public interface PlanService {
 	Plan getPlanById(long id);
 
 	List<PlanResponse> getAllPlans();
+
+	Map<Long, Map<StatutEquipement, Long>> countPlansByStatutPerProjet();
+
+
+	
 
 
 

@@ -159,5 +159,9 @@ public class PlanResponse {
 		this.statut = statut;
 	}
 	
-	
+	public PlanResponse(Long id, Projet projet, Equipement equipement) {
+        this.id = id;
+        this.projet = projet;
+        this.equipement = equipement;
+    }
 }
